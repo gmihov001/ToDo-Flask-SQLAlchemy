@@ -59,7 +59,23 @@ def post_todo(username):
     # print("The todos: ", todos)
 
     return jsonify(body), 200
-     
+    
+@app.route('/todo/<username>', methods=['PUT'])    
+def edit_todo(username):
+    body = request.get_json()
+    exists = Todo.query.filter_by(username=username)
+    user_todos = list(map(lambda x: x.serialize(), exists))
+    
+    if exists is None:
+        raise APIException('The user does not exist', status_code=400)
+    if len(user_todos) < 1:
+        raise APIException('The list is empty', status_code=400)
+
+    for task in user_todos:
+        task.done = body.done
+
+    return jsonify("OK")    
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
