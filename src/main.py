@@ -60,7 +60,6 @@ def post_todo(username):
 @app.route('/todo/<username>', methods=['PUT'])    
 def edit_user_todos(username):
     body = request.get_json()
-    print("BODY: ", body)
     exists = Todo.query.filter_by(username=username)
     print("EXISTS: ", exists)
     user_todos = list(map(lambda x: x.serialize(), exists))
