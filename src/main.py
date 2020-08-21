@@ -54,27 +54,45 @@ def post_todo(username):
     todo = Todo(label=body['label'], done=body['done'], username=username)
     db.session.add(todo)
     db.session.commit()
-    # todos = Todo.query.filter_by(username=username)
-    # todos = list(map(lambda x: x.serialize, todos))
-    # print("The todos: ", todos)
 
-    return jsonify(body), 200
+    return jsonify(todo.serialize()), 200
     
 @app.route('/todo/<username>', methods=['PUT'])    
-def edit_todo(username):
+def edit_user_todos(username):
     body = request.get_json()
+    print("BODY: ", body)
     exists = Todo.query.filter_by(username=username)
+    print("EXISTS: ", exists)
     user_todos = list(map(lambda x: x.serialize(), exists))
+    print("USER TODOS: ", user_todos)
     
-    if exists is None:
-        raise APIException('The user does not exist', status_code=400)
-    if len(user_todos) < 1:
-        raise APIException('The list is empty', status_code=400)
-
+    # if exists is None:
+    #     raise APIException('The user does not exist', status_code=400)
+    # if len(user_todos) < 1:
+    #     raise APIException('The list is empty', status_code=400)
+    updated = None
     for task in user_todos:
-        task.done = body.done
+        print("task.label:", task['label'])
+        if task['label'] in body['label']:
+            task['done'] = body['done']
+            updated = task
+    db.session.commit()
+   
+    return jsonify(updated), 200   
 
-    return jsonify("OK")    
+@app.route('/todo/<username>/<int:id>', methods=['DELETE'])
+def delete_todo(username, id):
+    todo = Todo.query.get(id)
+    print(id)
+    if todo is None:
+        raise APIException('The entry does not exist', status_code=400)
+    db.session.delete(todo)
+    db.session.commit()
+    todos = Todo.query.filter_by(username=username)
+    todos = list(map(lambda x: x.serialize(), todos))
+    # print("The todos: ", todos)
+
+    return jsonify(todos), 200   
 
 
 # this only runs if `$ python src/main.py` is executed
