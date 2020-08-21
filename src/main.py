@@ -61,7 +61,6 @@ def post_todo(username):
 def edit_user_todos(username):
     body = request.get_json()
     exists = Todo.query.filter_by(username=username)
-    print("EXISTS: ", exists)
     user_todos = list(map(lambda x: x.serialize(), exists))
     print("USER TODOS: ", user_todos)
     
