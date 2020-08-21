@@ -62,7 +62,6 @@ def edit_user_todos(username):
     body = request.get_json()
     exists = Todo.query.filter_by(username=username)
     user_todos = list(map(lambda x: x.serialize(), exists))
-    print("USER TODOS: ", user_todos)
     
     # if exists is None:
     #     raise APIException('The user does not exist', status_code=400)
