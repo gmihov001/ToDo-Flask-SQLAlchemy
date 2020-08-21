@@ -69,7 +69,7 @@ def edit_user_todos(username):
     #     raise APIException('The list is empty', status_code=400)
     updated = None
     for task in user_todos:
-        if task['label'] in body['label']:
+        if task['label'] == body['label']:
             task['done'] = body['done']
             updated = task
     db.session.commit()
