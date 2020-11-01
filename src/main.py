@@ -30,13 +30,6 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-    return jsonify(response_body), 200
-
 @app.route('/todo/<username>', methods=['GET'])
 def get_todos(username):
     todos = Todo.query.filter_by(username=username)
@@ -73,7 +66,6 @@ def edit_user_todos(username):
             task['done'] = body['done']
             updated = task
     db.session.commit()
-   
     return jsonify(updated), 200   
 
 @app.route('/todo/<username>/<int:id>', methods=['DELETE'])
@@ -87,7 +79,6 @@ def delete_todo(username, id):
     todos = Todo.query.filter_by(username=username)
     todos = list(map(lambda x: x.serialize(), todos))
     # print("The todos: ", todos)
-
     return jsonify(todos), 200   
 
 
