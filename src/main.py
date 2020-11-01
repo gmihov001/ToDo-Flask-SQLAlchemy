@@ -30,14 +30,14 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/todo/<username>', methods=['GET'])
+@app.route('/todos/<username>', methods=['GET'])
 def get_todos(username):
     todos = Todo.query.filter_by(username=username)
     todos = list(map(lambda x: x.serialize(), todos))
     print("The todos: ", todos)
     return jsonify(todos), 200        
 
-@app.route('/todo/<username>', methods=['POST'])
+@app.route('/todos/<username>', methods=['POST'])
 def post_todo(username):
     body = request.get_json()
     exists = Todo.query.filter_by(username=username, label=body['label']).first()
@@ -50,7 +50,7 @@ def post_todo(username):
 
     return jsonify(todo.serialize()), 200
     
-@app.route('/todo/<int:id>', methods=['PUT'])    
+@app.route('/todos/<int:id>', methods=['PUT'])    
 def edit_user_todos(id):
     body = request.get_json()
     updating_item = Todo.query.get(id)
@@ -65,7 +65,7 @@ def edit_user_todos(id):
     todos = list(map(lambda x: x.serialize(), todos)
     return jsonify(todos), 200   
 
-@app.route('/todo/<username>/<int:id>', methods=['DELETE'])
+@app.route('/todos/<username>/<int:id>', methods=['DELETE'])
 def delete_todo(username, id):
     todo = Todo.query.get(id)
     print(id)
