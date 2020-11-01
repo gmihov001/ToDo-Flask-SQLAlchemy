@@ -43,32 +43,30 @@ def post_todo(username):
     exists = Todo.query.filter_by(username=username, label=body['label']).first()
     if exists is not None:
         raise APIException('You already have this ToDo item', status_code=404)
-
     todo = Todo(label=body['label'], done=body['done'], username=username)
     db.session.add(todo)
     db.session.commit()
-
     return jsonify(todo.serialize()), 200
     
 @app.route('/todos/<int:id>', methods=['PUT'])    
-def edit_user_todos(id):
+def edit_todos(id):
     body = request.get_json()
     updating_item = Todo.query.get(id)
+    print(todo)
     # user_todos = list(map(lambda x: x.serialize(), exists))
     if updating_item is None:
         raise APIException('Entry does not exist', status_code=400)
-    else:
-        updating_item.label = body['label']:
-        updating_item.done = body['done']
-        db.session.commit()
-    todos = Todo.query.filter_by(username=username)
-    todos = list(map(lambda x: x.serialize(), todos)
-    return jsonify(todos), 200   
+    updating_item.label = body['label']
+    updating_item.done = body['done']
+    db.session.commit()
+    # todos = Todo.query.filter_by(username=body['username'])
+    # the_todos = list(map(lambda x: x.serialize(), todos)
+    return jsonify("Done")
 
 @app.route('/todos/<username>/<int:id>', methods=['DELETE'])
 def delete_todo(username, id):
     todo = Todo.query.get(id)
-    print(id)
+    print(todo)
     if todo is None:
         raise APIException('The entry does not exist', status_code=400)
     db.session.delete(todo)
