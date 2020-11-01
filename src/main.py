@@ -46,21 +46,24 @@ def post_todo(username):
     todo = Todo(label=body['label'], done=body['done'], username=username)
     db.session.add(todo)
     db.session.commit()
-    return jsonify(todo.serialize()), 200
+    todos = Todo.query.filter_by(username=username)
+    todos = list(map(lambda x: x.serialize(), todos))
+    return jsonify(todos), 200
     
 @app.route('/todos/<int:id>', methods=['PUT'])    
 def edit_todos(id):
     body = request.get_json()
     updating_item = Todo.query.get(id)
-    print(todo)
+    print("Updating item", updating_item)
     # user_todos = list(map(lambda x: x.serialize(), exists))
     if updating_item is None:
         raise APIException('Entry does not exist', status_code=400)
     updating_item.label = body['label']
     updating_item.done = body['done']
     db.session.commit()
-    # todos = Todo.query.filter_by(username=body['username'])
-    # the_todos = list(map(lambda x: x.serialize(), todos)
+    todos = Todo.query.filter_by(username=body['username'])
+    print("Put todos: ", todos)
+    the_todos = list(map(lambda x: x.serialize(), todos)
     return jsonify("Done")
 
 @app.route('/todos/<username>/<int:id>', methods=['DELETE'])
